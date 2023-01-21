@@ -1,0 +1,114 @@
+version: "3.9"
+
+x-default-node: &default-ignite-node
+  image: "apacheignite/ignite:2.14.0-jdk11"
+  environment: &default_environment
+    IGNITE_QUIET: "false"
+    CONFIG_URI: "file:///opt/ignite/apache-ignite/config/my/docker-ignite.xml" # copied from ../docker/config/start_node.sh
+    JVM_OPTS: "
+    -Xms512m 
+    -Xmx512m 
+    -server 
+    -XX:+AggressiveOpts 
+    -XX:+UseG1GC 
+    -XX:MaxPermSize=256m 
+    -XX:+DisableExplicitGC 
+    -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true"
+  networks:
+    - cluster-network
+  command:
+    [ "/bin/sh","-c", "/opt/ignite/apache-ignite/config/my/start_node.sh" ] # copied from ../docker/config/start_node.sh
+  volumes:
+    - "./config:/opt/ignite/apache-ignite/config/my"
+
+
+services:
+  ignite-01:
+    <<: *default-ignite-node
+    hostname: "ignite-01"
+    environment:
+      <<: *default_environment
+      DISCOVERY_PORT_VAR: "47501"
+      COMMUNICATION_PORT_VAR: "47101"
+      CLIENT_PORT_VAR: "10801"
+    ports:
+      - "47501:47501"
+      - "47101:47101"
+      - "10801:10801"
+  ignite-02:
+    <<: *default-ignite-node
+    hostname: "ignite-02"
+    environment:
+      <<: *default_environment
+      DISCOVERY_PORT_VAR: "47502"
+      COMMUNICATION_PORT_VAR: "47102"
+      CLIENT_PORT_VAR: "10802"
+    ports:
+      - "47502:47502"
+      - "47102:47102"
+      - "10802:10802"
+  ignite-03:
+    <<: *default-ignite-node
+    hostname: "ignite-03"
+    environment:
+      <<: *default_environment
+      DISCOVERY_PORT_VAR: "47503"
+      COMMUNICATION_PORT_VAR: "47103"
+      CLIENT_PORT_VAR: "10803"
+    ports:
+      - "47503:47503"
+      - "47103:47103"
+      - "10803:10803"
+  ignite-04:
+    <<: *default-ignite-node
+    hostname: "ignite-04"
+    environment:
+      <<: *default_environment
+      DISCOVERY_PORT_VAR: "47504"
+      COMMUNICATION_PORT_VAR: "47104"
+      CLIENT_PORT_VAR: "10804"
+    ports:
+      - "47504:47504"
+      - "47104:47104"
+      - "10804:10804"
+  ignite-05:
+    <<: *default-ignite-node
+    hostname: "ignite-05"
+    environment:
+      <<: *default_environment
+      DISCOVERY_PORT_VAR: "47505"
+      COMMUNICATION_PORT_VAR: "47105"
+      CLIENT_PORT_VAR: "10805"
+    ports:
+      - "47505:47505"
+      - "47105:47105"
+      - "10805:10805"
+
+
+networks:
+  cluster-network:
+    name: ignite-cluster-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/29 # 5 hosts. '10.5.0.1' is reserved for gateway
+
+
+
+# to add static ip
+#    networks:
+#      cluster-network:
+#        ipv4_address: 10.5.0.5
+
+# for mac users
+# sudo ifconfig lo0 alias 10.5.0.2/29
+# sudo ifconfig lo0 alias 10.5.0.3/29
+# sudo ifconfig lo0 alias 10.5.0.4/29
+# sudo ifconfig lo0 alias 10.5.0.5/29
+# sudo ifconfig lo0 alias 10.5.0.6/29
+
+# sudo ifconfig lo0 -alias 10.5.0.2
+# sudo ifconfig lo0 -alias 10.5.0.3
+# sudo ifconfig lo0 -alias 10.5.0.4
+# sudo ifconfig lo0 -alias 10.5.0.5
+# sudo ifconfig lo0 -alias 10.5.0.6
