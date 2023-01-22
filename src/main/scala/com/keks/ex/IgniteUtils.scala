@@ -28,12 +28,12 @@ object IgniteUtils {
 
     val cfg = new IgniteConfiguration()
     cfg.setClientMode(true)
-    cfg.setPeerClassLoadingEnabled(true);
+    cfg.setPeerClassLoadingEnabled(true)
 
     val ipFinder = new TcpDiscoveryVmIpFinder()
     val nodesAddresses = Seq(s"$host:$port")
     ipFinder.setAddresses(nodesAddresses.asJava)
-    cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder));
+    cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder))
 
     Using(Ignition.start(cfg)) { client =>
       if (client.cluster().state() != ClusterState.ACTIVE) client.cluster().state(ClusterState.ACTIVE)

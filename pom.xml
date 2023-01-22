@@ -13,7 +13,6 @@
         <scala.version>2.13.10</scala.version>
     </properties>
 
-
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>

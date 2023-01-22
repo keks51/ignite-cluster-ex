@@ -17,25 +17,25 @@ object ThickClientConnEx {
 
     val cfg = new IgniteConfiguration()
     cfg.setClientMode(true)
-    cfg.setPeerClassLoadingEnabled(true);
+    cfg.setPeerClassLoadingEnabled(true)
 
     val ipFinder = new TcpDiscoveryVmIpFinder()
     val nodesAddresses = Seq("127.0.0.1:47501") //  node's ip from docker network
     ipFinder.setAddresses(nodesAddresses.asJava)
-    cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder));
+    cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder))
 
-    val ignite = Ignition.start(cfg)
-    if (ignite.cluster().state() != ClusterState.ACTIVE) ignite.cluster().state(ClusterState.ACTIVE)
+    val thickClient = Ignition.start(cfg)
+    if (thickClient.cluster().state() != ClusterState.ACTIVE) thickClient.cluster().state(ClusterState.ACTIVE)
 
-    val nodes = ignite.cluster().nodes().asScala.map { node =>
+    val nodes = thickClient.cluster().nodes().asScala.map { node =>
       (node.hostNames().asScala.head, node.addresses().asScala.head)
     }
     println(
       s"""Nodes in Cluster:
-        |${nodes.map(e => s"HostName: " + e._1 + "   Ip: " + e._2).mkString("\n")}
-        |""".stripMargin)
+         |${nodes.map(e => s"HostName: " + e._1 + "   Ip: " + e._2).mkString("\n")}
+         |""".stripMargin)
 
-    ignite.close()
+    thickClient.close()
 
   }
 

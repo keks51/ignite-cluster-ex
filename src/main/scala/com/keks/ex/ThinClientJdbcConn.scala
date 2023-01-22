@@ -26,5 +26,4 @@ object ThinClientJdbcConn {
     conn.close()
   }
 
-
 }
