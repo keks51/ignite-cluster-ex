@@ -14,6 +14,7 @@ x-default-node: &default-ignite-node
     -XX:MaxPermSize=256m 
     -XX:+DisableExplicitGC 
     -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true"
+    OPTION_LIBS: "ignite-indexing"
   networks:
     - cluster-network
   command:
