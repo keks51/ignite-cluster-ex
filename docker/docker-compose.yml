@@ -21,6 +21,7 @@ x-default-node: &default-ignite-node
     [ "/bin/sh","-c", "/opt/ignite/apache-ignite/config/my/start_node.sh" ] # copied from ../docker/config/start_node.sh
   volumes:
     - "./config:/opt/ignite/apache-ignite/config/my"
+    - "./libs:/opt/ignite/apache-ignite/libs/external"
 
 
 services:
