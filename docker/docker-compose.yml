@@ -14,13 +14,13 @@ x-default-node: &default-ignite-node
     -XX:MaxPermSize=256m 
     -XX:+DisableExplicitGC 
     -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true"
-    OPTION_LIBS: "ignite-indexing"
+    OPTION_LIBS: "ignite-indexing, ignite-rest-http" # ignite-rest-http is required for web-console
   networks:
     - cluster-network
   command:
     [ "/bin/sh","-c", "/opt/ignite/apache-ignite/config/my/start_node.sh" ] # copied from ../docker/config/start_node.sh
   volumes:
-    - "./config:/opt/ignite/apache-ignite/config/my"
+    - "./ignite_config:/opt/ignite/apache-ignite/config/my"
     - "./libs:/opt/ignite/apache-ignite/libs/external"
 
 
@@ -28,6 +28,7 @@ services:
   ignite-01:
     <<: *default-ignite-node
     hostname: "ignite-01"
+    container_name: "ignite-01"
     environment:
       <<: *default_environment
       DISCOVERY_PORT_VAR: "47501"
@@ -40,6 +41,7 @@ services:
   ignite-02:
     <<: *default-ignite-node
     hostname: "ignite-02"
+    container_name: "ignite-02"
     environment:
       <<: *default_environment
       DISCOVERY_PORT_VAR: "47502"
@@ -52,6 +54,7 @@ services:
   ignite-03:
     <<: *default-ignite-node
     hostname: "ignite-03"
+    container_name: "ignite-03"
     environment:
       <<: *default_environment
       DISCOVERY_PORT_VAR: "47503"
@@ -64,6 +67,7 @@ services:
   ignite-04:
     <<: *default-ignite-node
     hostname: "ignite-04"
+    container_name: "ignite-04"
     environment:
       <<: *default_environment
       DISCOVERY_PORT_VAR: "47504"
@@ -76,6 +80,7 @@ services:
   ignite-05:
     <<: *default-ignite-node
     hostname: "ignite-05"
+    container_name: "ignite-05"
     environment:
       <<: *default_environment
       DISCOVERY_PORT_VAR: "47505"
@@ -87,13 +92,61 @@ services:
       - "10805:10805"
 
 
+
+  # WEB CONSOLE  CHECK README
+#  backend:
+#    image: gridgain/gridgain-web-console-backend:2021.04.00
+#    hostname: "web-back"
+#    container_name: "web-back"
+#    environment:
+#      - JVM_OPTS=
+#      - server_port=3000
+#      - tokens=TOKEN_REPLACE_ME
+#      - node-uri="http://ignite-01:8080"
+#
+#    volumes:
+#      - "./web_console_config/work:/opt/gridgain-web-console-server/work"
+#    networks:
+#      - cluster-network
+#    depends_on:
+#      - ignite-01
+#  frontend:
+#    image: gridgain/gridgain-web-console-frontend:2021.04.00
+#    hostname: "web-front"
+#    container_name: "web-front"
+#    volumes:
+#      - "./web_console_config/web-console.conf:/etc/nginx/web-console.conf"
+#      - "./web_console_config/server.crt:/etc/nginx/server.crt"
+#      - "./web_console_config/server.nopass.key:/etc/nginx/server.nopass.key"
+#    ports:
+#      - 80:8008
+#      - 443:8443
+#    networks:
+#      - cluster-network
+#    depends_on:
+#      - ignite-01
+#  web-agent:
+#    image: gridgain/gridgain-web-agent:2021.04.00
+#    hostname: "web-agent"
+#    container_name: "web-agent"
+#    environment:
+#      DRIVER_FOLDER: "./jdbc-drivers"
+#      NODE_URI: "http://ignite-01:8080"
+#      SERVER_URI: "http://web-back:3000"
+#      TOKENS: TOKEN_REPLACE_ME
+#    networks:
+#      - cluster-network
+#    depends_on:
+#      - ignite-01
+
+
 networks:
   cluster-network:
     name: ignite-cluster-net
     driver: bridge
     ipam:
       config:
-        - subnet: 10.5.0.0/29 # 5 hosts. '10.5.0.1' is reserved for gateway
+        - subnet: 10.5.0.0/28 # 13 hosts. '10.5.0.1' is reserved for gateway
 
 
 
@@ -103,14 +156,30 @@ networks:
 #        ipv4_address: 10.5.0.5
 
 # for mac users
-# sudo ifconfig lo0 alias 10.5.0.2/29
-# sudo ifconfig lo0 alias 10.5.0.3/29
-# sudo ifconfig lo0 alias 10.5.0.4/29
-# sudo ifconfig lo0 alias 10.5.0.5/29
-# sudo ifconfig lo0 alias 10.5.0.6/29
+# sudo ifconfig lo0 alias 10.5.0.2/28
+# sudo ifconfig lo0 alias 10.5.0.3/28
+# sudo ifconfig lo0 alias 10.5.0.4/28
+# sudo ifconfig lo0 alias 10.5.0.5/28
+# sudo ifconfig lo0 alias 10.5.0.6/28
+# sudo ifconfig lo0 alias 10.5.0.7/28
+# sudo ifconfig lo0 alias 10.5.0.8/28
+# sudo ifconfig lo0 alias 10.5.0.9/28
+# sudo ifconfig lo0 alias 10.5.0.10/28
+# sudo ifconfig lo0 alias 10.5.0.11/28
+# sudo ifconfig lo0 alias 10.5.0.12/28
+# sudo ifconfig lo0 alias 10.5.0.13/28
+# sudo ifconfig lo0 alias 10.5.0.14/28
 
 # sudo ifconfig lo0 -alias 10.5.0.2
 # sudo ifconfig lo0 -alias 10.5.0.3
 # sudo ifconfig lo0 -alias 10.5.0.4
 # sudo ifconfig lo0 -alias 10.5.0.5
 # sudo ifconfig lo0 -alias 10.5.0.6
+# sudo ifconfig lo0 -alias 10.5.0.7
+# sudo ifconfig lo0 -alias 10.5.0.8
+# sudo ifconfig lo0 -alias 10.5.0.9
+# sudo ifconfig lo0 -alias 10.5.0.10
+# sudo ifconfig lo0 -alias 10.5.0.11
+# sudo ifconfig lo0 -alias 10.5.0.12
+# sudo ifconfig lo0 -alias 10.5.0.13
+# sudo ifconfig lo0 -alias 10.5.0.14

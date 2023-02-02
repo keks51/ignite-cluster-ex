@@ -23,18 +23,24 @@ object IgniteUtils {
       .failed.foreach(throw _)
   }
 
-  def withIgniteThickClient(host: String, port: Int)(func: Ignite => Unit): Unit = {
+  private val defConf: IgniteConfiguration => Unit = (_: IgniteConfiguration) => ()
+  def withIgniteDockerThickClient(changeConf: IgniteConfiguration => Unit = defConf)(func: Ignite => Unit): Unit =
+    withIgniteThickClient("127.0.0.1", 47501)(changeConf)(func)
+
+  def withIgniteThickClient(host: String, port: Int)
+                           (changeConf: IgniteConfiguration => Unit = defConf)
+                           (func: Ignite => Unit): Unit = {
     System.setProperty(IgniteSystemProperties.IGNITE_QUIET, "true") // verbose logging false
 
     val cfg = new IgniteConfiguration()
     cfg.setClientMode(true)
     cfg.setPeerClassLoadingEnabled(true)
-
     val ipFinder = new TcpDiscoveryVmIpFinder()
     val nodesAddresses = Seq(s"$host:$port")
     ipFinder.setAddresses(nodesAddresses.asJava)
     cfg.setDiscoverySpi(new TcpDiscoverySpi().setIpFinder(ipFinder))
 
+    changeConf(cfg)
     Using(Ignition.start(cfg)) { client =>
       if (client.cluster().state() != ClusterState.ACTIVE) client.cluster().state(ClusterState.ACTIVE)
       func(client)

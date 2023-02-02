@@ -88,6 +88,18 @@
             </list>
         </property>
 
+        <!--    SQL SCHEMAS    -->
+        <property name="sqlConfiguration">
+            <bean class="org.apache.ignite.configuration.SqlConfiguration">
+                <property name="sqlSchemas">
+                    <list>
+                        <value>SCALA_CACHE_SCHEMA</value>
+                        <value>JAVA_CACHE_SCHEMA</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
         <!--
         <property name="gridLogger">
             <bean class="org.apache.ignite.logger.log4j.Log4JLogger">

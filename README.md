@@ -3,11 +3,19 @@
 ## Steps for Mac users:
 1) docker compose up -d
 2) Add loopback for ips:  
-   sudo ifconfig lo0 alias 10.5.0.2/29  
-   sudo ifconfig lo0 alias 10.5.0.3/29  
-   sudo ifconfig lo0 alias 10.5.0.4/29  
-   sudo ifconfig lo0 alias 10.5.0.5/29  
-   sudo ifconfig lo0 alias 10.5.0.6/29   
+   sudo ifconfig lo0 alias 10.5.0.2/28
+   sudo ifconfig lo0 alias 10.5.0.3/28
+   sudo ifconfig lo0 alias 10.5.0.4/28
+   sudo ifconfig lo0 alias 10.5.0.5/28
+   sudo ifconfig lo0 alias 10.5.0.6/28
+   sudo ifconfig lo0 alias 10.5.0.7/28
+   sudo ifconfig lo0 alias 10.5.0.8/28
+   sudo ifconfig lo0 alias 10.5.0.9/28
+   sudo ifconfig lo0 alias 10.5.0.10/28
+   sudo ifconfig lo0 alias 10.5.0.11/28
+   sudo ifconfig lo0 alias 10.5.0.12/28
+   sudo ifconfig lo0 alias 10.5.0.13/28
+   sudo ifconfig lo0 alias 10.5.0.14/28
 This step should be repeated after each machine restart.   
 To unbound sudo ifconfig lo0 -alias 10.5.0.6/29
 3) Run examples
@@ -46,3 +54,23 @@ To get around this issue all nodes should use different ports but this could not
 Only using conf file. That's why cong file contains DISCOVERY_PORT_VAR,COMMUNICATION_PORT_VAR and CLIENT_PORT_VAR  
 instead of real values. In compose yml for each node env variables are set and during node start up each container   
 copies conf file and set ports. (See file ../docker/config/start_node.sh)
+
+
+
+## WEB CONSOLE
+1) generate ssl keys inside ./docker/web_console_config/ using  
+'openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.nopass.key -out server.crt'    
+type any country code during creation   
+   If you enter '.', the field will be left blank.    
+   -----    
+   Country Name (2 letter code) []:AU  
+2) uncomment lines after WEB CONSOLE 
+3) docker-compose up -d
+4) go to https://localhost:80/
+5) sing up
+6) go to user_name/profile
+7) copy security token
+8) replace TOKEN_REPLACE_ME with copied token in 2 places
+9) docker-compose up -d
+10) go back to https://localhost:80/ and you should see 'MyConnectedClusters:1'
+11) now you can run 'ThickClientSqlWebConsoleEx or JavaThickClientSqlWebConsoleEx' examples and query results using web-console 
